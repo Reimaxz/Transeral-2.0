@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transeral - Dashboard</title>
+    
+    <!-- Fuente -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="materiales.css">
+    <link rel="stylesheet" href="choferes.css">
+    <link rel="stylesheet" href="vehiculos.css">
+    <link rel="stylesheet" href="inventario.css">
+    <link rel="stylesheet" href="accidentes.css">
+    <link rel="stylesheet" href="mantenimiento.css">
+    <link rel="stylesheet" href="reportes.css">
+    
+</head>
+<body>
+
+<div class="dashboard-layout">
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="sidebar">
+        <div class="logo-seccion">
+            <div class="logo-wrapper">
+                <i class="fa-solid fa-truck-moving camion-animado"></i>
+            </div>
+            <div class="logo-textos">
+                <span class="marca">Trans<span class="resaltado">eral</span></span>
+                <span class="eslogan">Sistema de gestión de transporte</span>
+            </div>
+        </div>
+
+        <nav class="menu-vertical">
+            <button onclick="cambiarSeccion('dashboard')" class="active"><i class="fa-solid fa-th-large"></i> Dashboard</button>
+            <button onclick="cambiarSeccion('viajes')"><i class="fa-solid fa-route"></i> Viajes</button>
+            <button onclick="cambiarSeccion('materiales')"><i class="fa-solid fa-box"></i> Materiales</button>
+            <button onclick="cambiarSeccion('choferes')"><i class="fa-solid fa-users"></i> Choferes</button>
+            <button onclick="cambiarSeccion('vehiculos')"><i class="fa-solid fa-truck"></i> Vehículos</button>
+            <button onclick="cambiarSeccion('inventario')"><i class="fa-solid fa-warehouse"></i> Inventario</button>
+            <button onclick="cambiarSeccion('accidentes')"><i class="fa-solid fa-triangle-exclamation"></i> Accidentes</button>
+            <button onclick="cambiarSeccion('mantenimiento')"><i class="fa-solid fa-wrench"></i> Mantenimiento</button>
+            <button onclick="cambiarSeccion('reportes')"><i class="fa-solid fa-file-lines"></i> Reportes</button>
+        </nav>
+
+
+        <div class="sidebar-footer">
+            <button class="btn-logout" onclick="logout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+            </button>
+        </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <section id="dashboard" class="pantalla-seccion activa">
+        <header class="dashboard-header">
+            <div class="titulo-pagina">
+                <h1>Dashboard</h1>
+                <p>Resumen general del sistema de transporte.</p>
+            </div>
+            <div class="acciones-header">
+                <button class="btn-secundario">Descargar Reporte</button>
+                <button class="btn-primario">Nuevo Viaje</button>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+            <div class="stat-info">
+                <span class="stat-label">Viajes Activos</span>
+                <span class="stat-valor">24</span>
+                <span class="stat-tendencia positivo">+12% desde el mes pasado</span>
+            </div>
+            <div class="stat-icon blue"><i class="fa-solid fa-sync"></i></div>
+            </div>
+
+            <div class="stat-card">
+            <div class="stat-info">
+                <span class="stat-label">Material Transportado</span>
+                <span class="stat-valor">1,240 t</span>
+                <span class="stat-tendencia">+8% desde el mes pasado</span>
+            </div>
+            <div class="stat-icon orange"><i class="fa-solid fa-box"></i></div>
+            </div>
+
+            <div class="stat-card" onclick="mostrar('choferes')">
+            <div class="stat-info">
+                <span class="stat-label">Choferes Activos</span>
+                <span class="stat-valor">32/40</span>
+                <span class="stat-tendencia">8 en descanso</span>
+            </div>
+            <div class="stat-icon green">
+            <i class="fa-solid fa-user-check"></i>
+            </div>
+            </div>
+
+            <div class="stat-card">
+            <div class="stat-info">
+                <span class="stat-label">Alertas Recientes</span>
+                <span class="stat-valor">3</span>
+                <span class="stat-tendencia negativo">Requieren atención</span>
+            </div>
+            <div class="stat-icon red"><i class="fa-solid fa-circle-exclamation"></i></div>
+            </div>
+        </section>
+
+        <div class="data-grid">
+            <div class="chart-container">
+                <h3>Viajes por Día</h3>
+                <p class="chart-sub">Rendimiento de la semana actual</p>
+                <canvas id="graficaViajes"></canvas>
+            </div>
+
+<div class="activity-container">
+<h3>Actividad Reciente</h3>
+<p class="chart-sub">Últimos movimientos en el sistema</p>
+
+<ul class="activity-list">
+<li>
+<span class="dot yellow"></span>
+<p>Viaje #1024 completado <span class="time">Hace 10 min</span></p>
+</li>
+<li>
+<span class="dot yellow"></span>
+<p>Mantenimiento preventivo - Unidad 05 <span class="time">Hace 45 min</span></p>
+</li>
+<li>
+<span class="dot yellow"></span>
+<p>Juan Pérez inició turno <span class="time">Hace 2 horas</span></p>
+</li>
+<li>
+<span class="dot yellow"></span>
+<p>Nuevo viaje asignado #1025 <span class="time">Hace 3 horas</span></p>
+</li>
+</ul>
+
+<a href="#" class="view-all">Ver todo →</a>
+</div>
+</div>
+</section>
+
+<!-- SECCIÓN 2: VIAJES -->
+    <section id="viajes" class="pantalla-seccion">
+        <header class="dashboard-header">
+            <div class="titulo-pagina">
+                <h1>Módulo de Logística</h1>
+                <p>Gestión de destinos, rutas y despachos.</p>
+            </div>
+        </header>
+
+        <!-- SUB-MENÚ DE PESTAÑAS -->
+        <div class="tabs-container">
+            <!-- Fíjate que este tiene la clase 'active' -->
+            <button id="btn-despacho" class="tab-btn active" onclick="verTab('despacho')">
+                <i class="fa-solid fa-truck-ramp-box"></i> Despacho
+            </button>
+            <button id="btn-rutas" class="tab-btn" onclick="verTab('rutas')">
+                <i class="fa-solid fa-map-location-dot"></i> Rutas
+            </button>
+            <button id="btn-destinos" class="tab-btn" onclick="verTab('destinos')">
+                <i class="fa-solid fa-location-dot"></i> Destinos
+            </button>
+        </div>
+
+    <!-- VISTA 1: DESPACHO -->
+    <div id="vista-despacho" class="viajes-tab-content" style="display: block;">
+        <div class="card-modulo form-horizontal">
+            <div class="fila-superior">
+                <div class="titulo-form"><i class="fa-solid fa-paper-plane"></i> NUEVO DESPACHO</div>
+                <button class="btn-añadir">Añade Viaje</button>
+            </div>
+            <div class="fila-inputs">
+                <div class="campo-inline">
+                    <label>Cargar Ruta Predeterminada</label>
+                    <select id="selectRuta" onchange="cargarRutaPredeterminada()">
+                        <option>Manual / Sin Rut...</option>
+                        <option value="valencia_caracas">Valencia &rArr; Caracas (Centro)</option>
+                        <option value="barinas_valle">Barinas &rArr; Valle de la Pascua (Llanos)</option>
+                    </select>
+                </div>
+                <div class="campo-inline">
+                    <label>Material de Carga</label>
+                    <input type="text" placeholder="Ejem: Maiz, Repuestos">
+                </div>
+                <div class="campo-inline">
+                    <label>Precio del Viaje ($)</label>
+                    <input type="number" placeholder="0.00">
+                </div>
+            </div>
+        </div>
+
+
+    <!-- MAPA Y ESTADÍSTICAS (Lado a lado) -->
+        <div class="logistica-grid">
+            <div id="map-container">
+            <div id="map"></div>
+            </div>
+
+        <div class="stats-viajes-card">
+        <div class="card-header-ventana">
+        <div class="titulo-ventana-central">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span>Estadísticas de Viajes Activos</span>
+        </div>
+        </div>
+    
+    <!-- CONTENIDO INTERNO BLANCO -->
+        <div class="card-body-ventana">
+        <div class="viaje-stat-item">
+            <div class="viaje-icon-bg yellow">
+                <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <div class="viaje-text">
+                <strong>5</strong>
+                <span>Viajes en Curso</span>
+            </div>
+        </div>
+
+        <div class="viaje-stat-item">
+            <div class="viaje-icon-bg green">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="viaje-text">
+                <strong>10</strong>
+                <span>Entregas Completadas Hoy</span>
+            </div>
+        </div>
+
+        <div class="viaje-stat-item">
+            <div class="viaje-icon-bg red">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="viaje-text">
+                <strong>1</strong>
+                <span>Incidente Menor</span>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </div>
+
+    <div id="vista-rutas" class="viajes-tab-content">
+        <!-- VENTANA PRINCIPAL DE PLANIFICACIÓN -->
+        <div class="ventana-logistica-transeral">
+            <div class="header-ventana-gris">
+                <i class="fa-solid fa-route"></i> Defina los parámetros del nuevo trayecto logístico
+            </div>
+            <form class="form-rutas-padding">
+            <!-- Fila 1: Origen y Destino -->
+            <div class="grid-inputs-doble">
+                <div class="grupo-input">
+                    <label>SELECCIONE SALIDA...</label>
+                    <div class="input-transeral">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <select><option>Punto de origen </option></select>
+                    </div>
+                </div>
+                <div class="grupo-input">
+                    <label>SELECCIONE DESTINO...</label>
+                    <div class="input-transeral">
+                        <i class="fa-solid fa-map-pin"></i>
+                        <select><option>Destino final</option></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fila 2: Carga y Prioridad -->
+            <div class="grid-inputs-doble">
+                <div class="grupo-input">
+                    <label>MATERIAL A LLEVAR</label>
+                    <div class="input-transeral">
+                        <i class="fa-solid fa-box"></i>
+                        <input type="text" placeholder="Ej. Suministros, Perecederos">
+                    </div>
+                </div>
+                <div class="grupo-input">
+                    <label>PRIORIDAD (0-10)</label>
+                    <div class="input-transeral">
+                        <i class="fa-solid fa-clock"></i>
+                        <input type="number" placeholder="5">
+                    </div>
+                </div>
+            </div>
+
+                <!-- Botón Generar (Estilo Transeral: Negro y Amarillo) -->
+                <button type="button" class="btn-generar-transeral">+ GENERAR NUEVA RUTA</button>
+            </form>
+        </div>
+
+            <!-- TARJETAS DE STATS (Alineadas en Horizontal) -->
+            <div class="grid-mini-stats">
+                <div class="stat-mini-card">
+                    <i class="fa-solid fa-route"></i>
+                    <div class="textos"><strong>12</strong><span>RUTAS ACTIVAS</span></div>
+                </div>
+                <div class="stat-mini-card">
+                    <i class="fa-solid fa-users"></i>
+                    <div class="textos"><strong>45</strong><span>CHOFERES EN CAMINO</span></div>
+                </div>
+                <div class="stat-mini-card">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <div class="textos"><strong>128</strong><span>DESPACHOS HOY</span></div>
+                </div>
+            </div>
+    </div>
+
+    <!-- VISTA 3: DESTINOS -->
+    <div id="vista-destinos" class="viajes-tab-content">
+        <!-- BUSCADOR / AGREGAR DESTINO (ESTILO CÁPSULA) -->
+        <div class="card-modulo-destinos">
+            <div class="buscador-pildora">
+                <input type="text" placeholder="Nombre del nuevo destino (Ej: Maturín)">
+                <button class="btn-agregar-plus">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- RECUADROS DE CIUDADES (GRID) -->
+        <div class="destinos-grid">
+                    <!-- CARACAS -->
+            <div class="ciudad-card">
+                <div class="pin-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="info-destino">
+                    <strong>Caracas</strong>
+                    <span class="status-badge">Sede Central</span>
+                </div>
+                <button class="btn-ver-mapa" onclick="irAMapa('caracas')" title="Ver en Mapa">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+            <!-- VALENCIA -->
+            <div class="ciudad-card">
+                <div class="pin-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="info-destino">
+                    <strong>Valencia</strong>
+                    <span class="status-badge">Centro Logístico</span>
+                </div>
+                <button class="btn-ver-mapa" onclick="irAMapa('valencia')" title="Ver en Mapa">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+            <!-- BARINAS -->
+            <div class="ciudad-card">
+                <div class="pin-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="info-destino">
+                    <strong>Barinas</strong>
+                    <span class="status-badge">Ruta Llanos</span>
+                </div>
+                <button class="btn-ver-mapa" onclick="irAMapa('barinas')" title="Ver en Mapa">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+            <!-- PUERTO CABELLO -->
+            <div class="ciudad-card">
+                <div class="pin-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="info-destino">
+                    <strong>Puerto Cabello</strong>
+                    <span class="status-badge">Zona Portuaria</span>
+                </div>
+                <button class="btn-ver-mapa" onclick="irAMapa('puerto cabello')" title="Ver en Mapa">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+</section>
+
+<!-- SECCIÓN 3: MATERIALES -->
+<section id="materiales" class="pantalla-seccion">
+    <h2 class="titulo-seccion">Analítica de Carga</h2>
+    <p class="subtitulo-seccion">Distribución de materiales según rutas activas en Venezuela.</p>
+    <!-- BLOQUE 1: TARJETAS -->
+    <div class="materiales-stats-grid">
+        <!-- TARJETA PRINCIPAL -->
+        <div class="card-material-dark">
+            <div class="card-mini-header">
+                <span class="badge-amarillo">
+                    <i class="fa-solid fa-seedling"></i> 12/24
+                </span>
+                <span class="hora-card">
+                    <i class="fa-solid fa-clock"></i> 15:30
+                </span>
+            </div>
+            <div class="card-main-content">
+                <h2>Maíz en Grano</h2>
+                <p>85% del flujo de carga total acumulado</p>
+            </div>
+        </div>
+
+        <!-- TARJETAS SECUNDARIAS -->
+        <div class="columna-stats-secundaria">
+            <div class="card-blanca-borde-gris">
+                <span class="label-muted">PUERTO DE MAYOR CARGA</span>
+                <h3>Puerto Rosario</h3>
+                <p>Frecuencia: 24 despachos/día</p>
+            </div>
+            <div class="card-blanca-borde-gris">
+                <span class="label-muted">EFICIENCIA DE CARGA</span>
+                <h3>92.4%</h3>
+                <p>Promedio de puntualidad: Óptimo</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOQUE 2: GRÁFICA -->
+    <div class="card-blanca-borde-gris seccion-grafica">
+        <div class="header-card">
+            <h3>Flujo de Materiales (%)</h3>
+            <span class="badge-gris">Semana actual</span>
+        </div>
+
+        <div class="contenedor-canvas">
+            <canvas id="graficaMateriales"></canvas>
+        </div>
+
+    </div>
+
+    <!-- BLOQUE 3: TABLA -->
+    <div class="card-blanca-borde-gris seccion-tabla">
+
+        <div class="tabla-header-filtros">
+
+            <h3>Listado de Carga por Ruta</h3>
+
+            <div class="acciones-tabla">
+
+                <div class="buscador-pildora-mini">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Filtrar por insumo...">
+                </div>
+
+                <button class="btn-negro-sm">
+                    <i class="fa-solid fa-filter"></i> Filtrar
+                </button>
+
+            </div>
+
+        </div>
+
+        <table class="tabla-materiales-final">
+
+            <thead>
+                <tr>
+                    <th>INSUMO</th>
+                    <th>FRECUENCIA</th>
+                    <th>RUTA PRINCIPAL</th>
+                    <th>PRIORIDAD</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td><strong>MAÍZ AMARILLO</strong></td>
+                    <td>12 v/día</td>
+                    <td>Puerto Rosario → Planta Central</td>
+                    <td><span class="tag-status alta">Alta</span></td>
+                </tr>
+
+                <tr>
+                    <td><strong>SOYA PROCESADA</strong></td>
+                    <td>8 v/día</td>
+                    <td>Puerto Cabello → Almacén Norte</td>
+                    <td><span class="tag-status media">Media</span></td>
+                </tr>
+
+                <tr>
+                    <td><strong>CONTENEDORES 40FT</strong></td>
+                    <td>25 v/día</td>
+                    <td>Terminal Sur → Centro Logístico</td>
+                    <td><span class="tag-status critica">Crítica</span></td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+        <!-- FOOTER TABLA -->
+        <div class="tabla-footer">
+
+            <span>Items: 3 / 10</span>
+
+            <div class="paginacion">
+                <button class="btn-light">Anterior</button>
+                <button class="btn-dark">Siguiente</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SECCIÓN 4: CHOFERES -->
+<section id="choferes" class="pantalla-seccion">
+    <header class="header-pagina">
+        <div class="titulo">
+            <h1>Documentación de Personal</h1>
+            <p>Control de seriales, QYZ y vencimientos legales.</p>
+        </div>
+    </header>
+
+    <div class="choferes-grid">
+    
+    <!-- COLUMNA IZQUIERDA (Ocupa 2.5fr) -->
+    <div class="columna-izquierda-choferes">
+        <!-- 1. Tarjeta de Datos de Seguridad -->
+        <div class="card-transeral-grande">
+            <div class="header-card-icon">
+                <i class="fa-solid fa-shield-halved"></i> DATOS DE SEGURIDAD
+            </div>
+            <form class="form-choferes-padding">
+                <div class="grid-inputs-doble">
+                    <div class="grupo-input">
+                        <label>NÚMERO DE SERIE</label>
+                        <div class="input-transeral">
+                            <i class="fa-solid fa-hashtag"></i>
+                            <input type="text" placeholder="# SER-9920-X">
+                        </div>
+                    </div>
+                    <div class="grupo-input">
+                        <label>CÓDIGO QYZ DE OPERACIÓN</label>
+                        <div class="input-transeral">
+                            <i class="fa-solid fa-qrcode"></i>
+                            <input type="text" placeholder="QYZ-882">
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-inputs-doble">
+                    <div class="grupo-input">
+                        <label>FECHA DE VENCIMIENTO</label>
+                        <div class="input-transeral">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <input type="date">
+                        </div>
+                    </div>
+                    <div class="grupo-input">
+                        <label>ADJUNTAR PDF (OPCIONAL)</label>
+                        <div class="upload-area-dashed">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>Subir Archivo</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- 2. Tarjeta de Tabla de Registros -->
+        <div class="card-tabla-choferes">
+            <div class="header-card-icon">
+                <i class="fa-solid fa-list-check"></i> ÚLTIMOS REGISTROS PROCESADOS
+            </div>
+            <div class="cuerpo-tabla">
+                <table class="tabla-choferes-mini">
+                    <thead>
+                        <tr>
+                            <th>CHOFER</th>
+                            <th>SERIAL / QYZ</th>
+                            <th>ESTADO</th>
+                            <th>ACCION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>Luis Suarez</b></td>
+                            <td>SER-9920-X / QYZ-882</td>
+                            <td><span class="badge-vigente">VIGENTE</span></td>
+                            <td><button class="btn-tabla-ver"><i class="fa-solid fa-eye"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td><b>Carlos Mendoza</b></td>
+                            <td>SER-5510-A / QYZ-112</td>
+                            <td><span class="badge-vigente">VIGENTE</span></td>
+                            <td><button class="btn-tabla-ver"><i class="fa-solid fa-eye"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- Fin columna izquierda -->
+
+        <!-- ... (aquí termina la alerta roja) ... -->
+    <div class="columna-derecha-alertas">
+        <!-- 3. Alerta Crítica (Roja) -->
+        <div class="card-alertas-transeral">
+            <div class="header-alertas-rojo">
+                <i class="fa-solid fa-circle-exclamation"></i> ALERTAS CRÍTICAS
+            </div>
+            <div class="alerta-item-critico">
+                <strong>Licencia de Carga QYZ </strong>
+                <span>(Juan Pérez - Vence en 3 días)</span>
+            </div>
+        </div>
+
+        <!-- 4. Próximos a Vencer (Amarilla) -->
+        <!-- ¡ESTE ESTABA AFUERA! Ahora lo metemos dentro de la columna-derecha-alertas -->
+        <div class="card-alerta-color amarilla">
+            <div class="header-alerta-mini">
+                <i class="fa-solid fa-clock"></i> PRÓXIMOS A VENCER
+            </div>
+            <div class="cuerpo-alerta">
+                <div class="item-alerta-amarillo">
+                    <strong>Renovación de Serial (15 días)</strong>
+                    <span>Andrés Martínez</span>
+                </div>
+                <div class="item-alerta-amarillo">
+                    <strong>Control Médico (22 días)</strong>
+                    <span>Roberto G.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- SECCIÓN 5: Vehículos -->
+
+<section id="vehiculos" class="pantalla-seccion">
+    <!-- CABECERA -->
+    <header class="header-materiales">
+        <div class="titulo">
+            <h1>Control de Flota</h1>
+            <p>Estado técnico y operativo de las unidades en tiempo real.</p>
+        </div>
+        <div class="acciones-header">
+            <div class="search-pill-mini">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar unidad o placa...">
+            </div>
+            <button class="btn-primario-azul"><i class="fa-solid fa-plus"></i> Registrar Vehículo</button>
+        </div>
+    </header>
+
+    <!-- 1. RESUMEN DE FLOTA (Las 4 tarjetas superiores) -->
+    <div class="resumen-flota-grid">
+        <div class="card-resumen">
+            <i class="fa-solid fa-truck-moving"></i>
+            <div class="info"><span>FLOTA TOTAL</span><strong>42 Unidades</strong></div>
+        </div>
+        <div class="card-resumen">
+            <i class="fa-solid fa-check-circle" style="color: #2ecc71;"></i>
+            <div class="info"><span>DISPONIBLES</span><strong>28 Unidades</strong></div>
+        </div>
+        <div class="card-resumen">
+            <i class="fa-solid fa-route" style="color: #3498db;"></i>
+            <div class="info"><span>EN OPERACIÓN</span><strong>12 Unidades</strong></div>
+        </div>
+        <div class="card-resumen">
+            <i class="fa-solid fa-wrench" style="color: #e74c3c;"></i>
+            <div class="info"><span>EN TALLER</span><strong>02 Unidades</strong></div>
+        </div>
+    </div>
+
+    <!-- 2. LISTADO DE UNIDADES -->
+    <div class="sub-header-unidades">
+        <div class="titulo-flota">
+            <h3>Listado de Unidades <span>Mostrando 3 de 3</span></h3>
+        </div>
+        <div class="acciones-flota">
+            <button class="btn-link-transeral">Exportar CSV</button>
+            <button class="btn-link-transeral">Filtrar por Sede</button>
+        </div>
+    </div>
+
+    <!-- 3. GRID DE TARJETAS DETALLADAS -->
+    <div class="unidades-container-grid">
+        <!-- TARJETA 1 -->
+        <div class="unidad-card-premium">
+            <div class="status-indicator disponible">
+                <i class="fa-solid fa-truck"></i>
+                <span class="badge-manto-disponible">DISPONIBLE</span>
+            </div>
+            <div class="unidad-info-detallada">
+                <div class="u-header">
+                    <strong>Freightliner M2 106</strong>
+                    <span class="u-id">ID: AB2-8K32 <i class="fa-solid fa-calendar"></i> 2022</span>
+                </div>
+                <div class="u-specs">
+                    <span><i class="fa-solid fa-gauge"></i> 125,400 km</span>
+                    <span><i class="fa-solid fa-gas-pump"></i> Diesel S50</span>
+                    <span><i class="fa-solid fa-location-dot"></i> Base Central Caracas</span>
+                    <span><i class="fa-solid fa-shield-halved"></i> Seguro al día</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETA 2 -->
+        <div class="unidad-card-premium">
+            <div class="status-indicator en-ruta">
+                <i class="fa-solid fa-truck-fast"></i>
+                <span class="badge-manto-en-ruta">EN RUTA</span>
+            </div>
+            <div class="unidad-info-detallada">
+                <div class="u-header">
+                    <strong>Isuzu Forward 800</strong>
+                    <span class="u-id">ID: C12-LM90 <i class="fa-solid fa-calendar"></i> 2021</span>
+                </div>
+                <div class="u-specs">
+                    <span><i class="fa-solid fa-gauge"></i> 89,200 km</span>
+                    <span><i class="fa-solid fa-gas-pump"></i> Diesel Premium</span>
+                    <span><i class="fa-solid fa-location-dot"></i> Autopista Regional</span>
+                    <span><i class="fa-solid fa-shield-halved"></i> Seguro al día</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETA 3 -->
+        <div class="unidad-card-premium">
+            <div class="status-indicator mantenimiento">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                <span class="badge-manto-mantenimiento">MANTENIMIENTO</span>
+            </div>
+            <div class="unidad-info-detallada">
+                <div class="u-header">
+                    <strong>Kenworth T680</strong>
+                    <span class="u-id">ID: K99-XP22 <i class="fa-solid fa-calendar"></i> 2023</span>
+                </div>
+            <div class="u-specs">
+                <span><i class="fa-solid fa-circle-info"></i> 12,500 km</span>
+                <span><i class="fa-solid fa-gas-pump"></i> Diesel S50</span>
+                <span><i class="fa-solid fa-location-dot"></i> Taller Central</span>
+                <span><i class="fa-solid fa-shield-halved"></i> Seguro al día</span>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECCIÓN 6: INVENTARIO -->
+<section id="inventario" class="pantalla-seccion">
+    <header class="dashboard-header">
+        <div class="titulo">
+            <h1>Inventario de Activos</h1>
+            <p>Control centralizado de equipos por Código ZTE y ubicación física.</p>
+        </div>
+    </header>
+
+    <!-- BARRA DE BÚSQUEDA Y FILTROS -->
+    <div class="card-modulo-gris">
+        <div class="search-container-inv">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Buscar por código o nombre...">
+            <button class="btn-filtros-avanzados">Filtros Avanzados <i class="fa-solid fa-chevron-down"></i></button>
+        </div>
+        
+        <div class="filtros-grid-inv">
+            <div class="select-inv">
+                <label>ALMACÉN / PATIO</label>
+                <select><option>Todos los depósitos</option></select>
+            </div>
+            <div class="select-inv">
+                <label>CATEGORÍA</label>
+                <select><option>Logística & Operativa</option></select>
+            </div>
+            <div class="select-inv">
+                <label>ESTADO</label>
+                <select><option>Cualquier estado</option></select>
+            </div>
+            <div class="acciones-filtros-group">
+                <button class="btn-inv-accion">+ NUEVO ÍTEM</button>
+                <button class="btn-inv-accion">LIMPIAR</button>
+                <button class="btn-inv-accion activo">APLICAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUADRÍCULA DE ACTIVOS (GRID) -->
+    <div class="activos-grid">
+        <!-- ÍTEM 1 -->
+        <div class="card-activo">
+            <div class="card-inv-header">
+                <div class="icon-box-inv"><i class="fa-solid fa-box-archive"></i></div>
+                <span class="codigo-zte">ZTE-VEN-001</span>
+            </div>
+            <h3>Contenedor Refrigerado 40ft</h3>
+            <span class="status-badge-inv disponible">● DISPONIBLE</span>
+            <div class="detalles-inv-footer">
+                <div class="det-item"><span>CANTIDAD</span><strong>12 uds.</strong></div>
+                <div class="det-item"><span>UBICACIÓN</span><strong>Patio B - Zona</strong></div>
+            </div>
+        </div>
+        <!-- ÍTEM 2: Neumáticos -->
+        <div class="card-activo">
+            <div class="card-inv-header">
+                <div class="icon-box-inv"><i class="fa-solid fa-dharmachakra"></i></div>
+                <span class="codigo-zte">ZTE-VEN-108</span>
+            </div>
+            <h3>Neumáticos Camión 295/80</h3>
+            <span class="status-badge-inv stock-bajo">● STOCK BAJO</span>
+            <div class="detalles-inv-footer">
+                <div class="det-item"><span>CANTIDAD</span><strong>22 uds.</strong></div>
+                <div class="det-item"><span>UBICACIÓN</span><strong>Taller Valencia</strong></div>
+            </div>
+        </div>
+
+        <!-- ÍTEM 3: Aceite Hidráulico -->
+        <div class="card-activo">
+            <div class="card-inv-header">
+                <div class="icon-box-inv"><i class="fa-solid fa-droplet"></i></div>
+                <span class="codigo-zte">ZTE-VEN-215</span>
+            </div>
+            <h3>Aceite Hidráulico ISO 68</h3>
+            <span class="status-badge-inv disponible">● DISPONIBLE</span>
+            <div class="detalles-inv-footer">
+                <div class="det-item"><span>CANTIDAD</span><strong>45 lts.</strong></div>
+                <div class="det-item"><span>UBICACIÓN</span><strong>Sede Puerto</strong></div>
+            </div>
+        </div>
+
+        <!-- ÍTEM 4: Filtros de Aire -->
+        <div class="card-activo">
+            <div class="card-inv-header">
+                <div class="icon-box-inv"><i class="fa-solid fa-wind"></i></div>
+                <span class="codigo-zte">ZTE-VEN-302</span>
+            </div>
+            <h3>Filtro de Aire Heavy Duty</h3>
+            <span class="status-badge-inv agotado">● AGOTADO</span>
+            <div class="detalles-inv-footer">
+                <div class="det-item"><span>CANTIDAD</span><strong>00 uds.</strong></div>
+                <div class="det-item"><span>UBICACIÓN</span><strong>Almacén Central</strong></div>
+            </div>
+        </div>
+    </div>
+
+        <!-- TABLA DE MOVIMIENTOS RECIENTES -->
+    <div class="card-modulo-gris tabla-movimientos">
+        <h3>Movimientos Recientes</h3>
+        <table class="tabla-transeral-inv">
+            <thead>
+                <tr>
+                    <th>FECHA</th>
+                    <th>ACTIVO / CÓDIGO</th>
+                    <th>TIPO</th>
+                    <th>CANTIDAD</th>
+                    <th>RESPONSABLE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>28/03/2026</td>
+                    <td><strong>Contenedor 40ft</strong> (ZTE-001)</td>
+                    <td><span class="badge-entrada">● ENTRADA</span></td>
+                    <td>+2 uds</td>
+                    <td>Andrés M.</td>
+                </tr>
+                <tr>
+                    <td>27/03/2026</td>
+                    <td><strong>Generador 500kVA</strong> (ZTE-042)</td>
+                    <td><span class="badge-salida">● SALIDA</span></td>
+                    <td>-1 ud</td>
+                    <td>Marcos R.</td>
+                </tr>
+                <tr>
+                    <td>26/03/2026</td>
+                    <td><strong>Aceite ISO 68</strong> (ZTE-215)</td>
+                    <td><span class="badge-entrada">● ENTRADA</span></td>
+                    <td>+10 lts</td>
+                    <td>Juan Pérez</td>
+                </tr>
+                <tr>
+                    <td>25/03/2026</td>
+                    <td><strong>Kit de Frenos</strong> (ZTE-410)</td>
+                    <td><span class="badge-salida">● SALIDA</span></td>
+                    <td>-4 kits</td>
+                    <td>Carlos M.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- SECCIÓN 7: ACCIDENTES -->
+<section id="accidentes" class="pantalla-seccion">
+    <header class="dashboard-header">
+        <div class="titulo">
+            <h1>Control de Accidentes</h1>
+            <p>Gestión y registro oficial de incidentes operativos y viales de la flota.</p>
+        </div>
+    </header>
+
+    <!-- 1. FORMULARIO DE REPORTE (TU SELLO: MARCO GRIS) -->
+    <div class="card-modulo-gris">
+        <div class="header-form-acc">
+            <i class="fa-solid fa-plus"></i> REPORTAR INCIDENTE NUEVO
+        </div>
+        <form class="form-accidentes">
+            <div class="grid-inputs-acc">
+            <div class="campo-acc">
+                <label>Fecha del Suceso</label>
+                <div class="input-acc-ref">
+                    <i class="fa-regular fa-calendar"></i>
+                    <input type="date">
+                </div>
+            </div>
+            <div class="campo-acc">
+                <label>Unidad Involucrada</label>
+                <div class="input-acc-ref">
+                    <i class="fa-solid fa-truck"></i>
+                    <select><option>Seleccione unidad...</option></select>
+                </div>
+            </div>
+            <div class="campo-acc">
+                <label>Ubicación</label>
+                <div class="input-acc-ref">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <input type="text" placeholder="Ej: Troncal 9, KM 45">
+                </div>
+            </div>
+            </div>
+            <div class="campo-acc full">
+                <label>Descripción Breve</label>
+                <textarea class="textarea-acc-ref" placeholder="Detalles preliminares del incidente..."></textarea>
+            </div>
+            <div class="footer-form-acc">
+                <span class="nota-seguro"><i class="fa-solid fa-circle-info"></i> Todos los campos son obligatorios para el seguro.</span>
+                <button type="button" class="btn-registro-acc">Registrar en Sistema</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 2. HISTORIAL RECIENTE  -->
+    <div class="card-modulo-gris">
+        <div class="header-historial">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> HISTORIAL RECIENTE</h3>
+            <div class="toolbar-historial">
+                <div class="search-mini-acc">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar incidentes...">
+                </div>
+                <button class="btn-link-transeral">Ver Todo el Historial</button>
+            </div>
+        </div>
+
+        <div class="lista-incidentes">
+        
+        <!-- ITEM 1: LEVE  -->
+            <div class="incidente-item">
+                <div class="incidente-icon green-icon"><i class="fa-solid fa-shield-virus"></i></div>
+                <div class="incidente-info">
+                    <div class="i-top">
+                        <strong>Camión 02 (Mack Anthem)</strong>
+                        <span class="badge-leve">LEVE</span>
+                    </div>
+                    <div class="i-bottom">
+                        <span><i class="fa-solid fa-user"></i> Ricardo Gomez</span>
+                        <span><i class="fa-solid fa-calendar"></i> 2026-03-05</span>
+                        <span><i class="fa-solid fa-map-pin"></i> Autopista Regional del Centro, KM 124</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-acc"></i>
+            </div>
+
+            <!-- ITEM 2: MODERADA -->
+            <div class="incidente-item">
+                <div class="incidente-icon yellow-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="incidente-info">
+                    <div class="i-top">
+                        <strong>Camión 12 (Kenworth T680)</strong>
+                        <span class="badge-moderada">MODERADA</span>
+                    </div>
+                    <div class="i-bottom">
+                        <span><i class="fa-solid fa-user"></i> Juan Pérez</span>
+                        <span><i class="fa-solid fa-calendar"></i> 2026-02-28</span>
+                        <span><i class="fa-solid fa-map-pin"></i> Vía Valle de la Pascua - El Socorro</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-acc"></i>
+            </div>
+
+            <!-- ITEM 3: CRÍTICA -->
+            <div class="incidente-item">
+                <div class="incidente-icon red-icon">
+                    <i class="fa-solid fa-shield-crack"></i>
+                </div>
+                <div class="incidente-info">
+                    <div class="i-top">
+                        <strong>Camión 07 (Freightliner)</strong>
+                        <span class="badge-critica">CRÍTICA</span>
+                    </div>
+                    <div class="i-bottom">
+                        <span><i class="fa-solid fa-user"></i> Marcos Rivas</span>
+                        <span><i class="fa-solid fa-calendar"></i> 2026-02-15</span>
+                        <span><i class="fa-solid fa-map-pin"></i> Distribuidor Altamira, Caracas</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-acc"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. INDICADORES INFERIORES -->
+    <div class="grid-indicadores-acc">
+        <div class="card-mini-acc">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div><span>MES ACTUAL</span><strong>12 Reportes</strong></div>
+        </div>
+        <div class="card-mini-acc">
+            <i class="fa-solid fa-percent"></i>
+            <div><span>TASA DE RESOLUCIÓN</span><strong>94.5%</strong></div>
+        </div>
+        <div class="card-mini-acc">
+            <i class="fa-solid fa-wrench"></i>
+            <div><span>EN TALLER</span><strong>2 Unidades</strong></div>
+        </div>
+    </div>
+    
+</section>
+
+<!-- SECCIÓN 8: MANTENIMIENTO -->
+<section id="mantenimiento" class="pantalla-seccion">
+    <header class="header-materiales">
+        <div class="titulo">
+            <h1>Mantenimiento de Flota</h1>
+            <p>Supervisión de averías mecánicas, servicios preventivos y gestión de unidades en taller.</p>
+        </div>
+        <button class="btn-reportar-falla-rojo"><i class="fa-solid fa-triangle-exclamation"></i> REPORTAR FALLA</button>
+    </header>
+
+    <!-- 1. MÉTRICAS SUPERIORES -->
+    <div class="mantenimiento-stats-grid">
+        <div class="stat-mini-manto">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <div class="info"><span>UNIDADES EN TALLER</span><strong>02</strong></div>
+        </div>
+        <div class="stat-mini-manto">
+            <i class="fa-solid fa-calendar-check"></i>
+            <div class="info"><span>SERVICIOS HOY</span><strong>12</strong></div>
+        </div>
+        <div class="stat-mini-manto">
+            <i class="fa-solid fa-circle-exclamation" style="color: #dc3545;"></i>
+            <div class="info"><span>ALERTAS CRÍTICAS</span><strong>02</strong></div>
+        </div>
+        <div class="stat-mini-manto">
+            <i class="fa-solid fa-truck-fast"></i>
+            <div class="info"><span>DISPONIBILIDAD</span><strong>94%</strong></div>
+        </div>
+    </div>
+
+    <!-- 2. GRID DE TAREAS (LAS 6 DE LA IMAGEN) -->
+    <div class="sub-header-manto">
+        <h3>Tareas Activas <small>6 TOTALES</small></h3>
+        <div class="filtros-manto">
+            <span>Recientes</span> | <span>Prioridad <i class="fa-solid fa-circle-plus"></i></span>
+        </div>
+    </div>
+
+    <div class="tareas-manto-grid">
+        <!-- Tarjeta 1: Unidad 03 (CLASE CRITICA) -->
+        <div class="card-tarea-manto critica">
+            <div class="t-header">
+                <strong><i class="fa-solid fa-wrench"></i> Unidad 03</strong>
+                <span class="badge-manto-critica">CRÍTICA</span>
+            </div>
+            <div class="t-cuerpo">
+                <span class="cat-manto">Mecánica</span>
+                <p>Falla en el motor / Calentamiento excesivo en ruta 4</p>
+            </div>
+            <div class="t-footer">
+                <span><i class="fa-regular fa-clock"></i> 2026-03-12</span>
+                <span class="status-taller">● EN TALLER</span>
+            </div>
+        </div>
+
+        <!-- Tarjeta 2: Unidad 12 (CLASE NORMAL) -->
+        <div class="card-tarea-manto normal">
+            <div class="t-header">
+                <strong><i class="fa-solid fa-wrench"></i> Unidad 12</strong>
+                <span class="badge-manto-normal">NORMAL</span>
+            </div>
+            <div class="t-cuerpo">
+                <span class="cat-manto">Preventivo</span>
+                <p>Cambio de aceite y filtros de aire/combustible</p>
+            </div>
+            <div class="t-footer">
+                <span><i class="fa-regular fa-clock"></i> 2026-03-15</span>
+                <span class="status-prog">PROGRAMADO</span>
+            </div>
+        </div>
+
+        <!-- Tarjeta 3: Unidad 07 (CLASE ALTA) -->
+        <div class="card-tarea-manto alta">
+            <div class="t-header">
+                <strong><i class="fa-solid fa-wrench"></i> Unidad 07</strong>
+                <span class="badge-manto-alta">ALTA</span>
+            </div>
+            <div class="t-cuerpo">
+                <span class="cat-manto">Frenos</span>
+                <p>Revisión de sistema ABS y cambio de pastillas traseras</p>
+            </div>
+            <div class="t-footer">
+                <span><i class="fa-regular fa-clock"></i> 2026-03-13</span>
+                <span class="status-pend">PENDIENTE</span>
+            </div>
+        </div>
+
+        <!-- Tarjeta 4: Unidad 21 (CLASE NORMAL) -->
+        <div class="card-tarea-manto normal">
+            <div class="t-header">
+                <strong><i class="fa-solid fa-wrench"></i> Unidad 21</strong>
+                <span class="badge-manto-normal">NORMAL</span>
+            </div>
+            <div class="t-cuerpo">
+                <span class="cat-manto">Neumáticos</span>
+                <p>Rotación y balanceo de tren delantero</p>
+            </div>
+            <div class="t-footer">
+                <span><i class="fa-regular fa-clock"></i> 2026-03-18</span>
+                <span class="status-prog">PROGRAMADO</span>
+            </div>
+        </div>
+
+        <!-- Tarjeta 5: Unidad 09 (CLASE ALTA) -->
+        <div class="card-tarea-manto alta">
+            <div class="t-header">
+                <strong><i class="fa-solid fa-wrench"></i> Unidad 09</strong>
+                <span class="badge-manto-alta">ALTA</span>
+            </div>
+            <div class="t-cuerpo">
+                <span class="cat-manto">Transmisión</span>
+                <p>Fuga de líquido hidráulico en caja de cambios</p>
+            </div>
+            <div class="t-footer">
+                <span><i class="fa-regular fa-clock"></i> 2026-03-11</span>
+                <span class="status-taller">● EN TALLER</span>
+            </div>
+        </div>
+
+        <!-- Tarjeta 6: Unidad 15 (CLASE CRITICA) -->
+        <div class="card-tarea-manto critica">
+            <div class="t-header">
+                <strong><i class="fa-solid fa-wrench"></i> Unidad 15</strong>
+                <span class="badge-manto-critica">CRÍTICA</span>
+            </div>
+            <div class="t-cuerpo">
+                <span class="cat-manto">Eléctrico</span>
+                <p>Falla en alternador y sistema de luces traseras</p>
+            </div>
+            <div class="t-footer">
+                <span><i class="fa-regular fa-clock"></i> 2026-03-14</span>
+                <span class="status-pend">PENDIENTE</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECCIÓN 9: REPORTES -->
+<section id="reportes" class="pantalla-seccion">
+    <header class="dashboard-header">
+        <div class="titulo">
+            <h1>Centro de Reportes</h1>
+            <p>Acceder y descargar la documentación detallada de las operaciones en tiempo real.</p>
+        </div>
+    </header>
+
+    <div class="reportes-grid-principal">
+        <!-- COLUMNA IZQUIERDA: REPORTE DESTACADO + ACCESOS -->
+        <div class="columna-reportes-main">
+            <!-- TARJETA REPORTE GENERAL  -->
+            <div class="card-reporte-destacado">
+                <div class="icono-reporte-grande">
+                    <i class="fa-solid fa-file-invoice"></i>
+                </div>
+                <h2>Reporte General Diario</h2>
+                <p>Compilación completa del estado de los viajes actuales, asignación de choferes en ruta y alertas críticas detectadas hoy.</p>
+                
+                <div class="botones-reporte-principal">
+                    <button class="btn-amarillo-transeral"><i class="fa-solid fa-download"></i> Descargar .TXT</button>
+                    <button class="btn-blanco-borde">Previsualizar Informe</button>
+                </div>
+
+                <div class="stats-reporte-footer">
+                    <div class="st-rep"><span>VIAJES</span><strong style="color: #29b971;">142</strong></div>
+                    <div class="st-rep"><span>ALERTAS</span><strong style="color: #dc3545;">03</strong></div>
+                    <div class="st-rep"><span>CHOFERES</span><strong style="color: #2030bb;">89</strong></div>
+                </div>
+            </div>
+
+            <!-- ACCESOS DIRECTOS (ARREGLO DE LA PARTE DE ABAJO) -->
+            <div class="grid-accesos-reportes">
+                <div class="card-acceso-mini">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <div class="txt-acc"><strong>Log de Accidentes</strong><span>ÚLTIMAS 24 HORAS</span></div>
+                    <i class="fa-solid fa-chevron-right flecha-acc"></i>
+                </div>
+                <div class="card-acceso-mini">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <div class="txt-acc"><strong>Mantenimiento Preventivo</strong><span>PLAN SEMANAL</span></div>
+                    <i class="fa-solid fa-chevron-right flecha-acc"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: HISTORIAL + SOPORTE -->
+        <div class="columna-reportes-side">
+            
+            <!-- LISTADO DE REPORTES RECIENTES -->
+            <div class="card-historial-reportes">
+                <div class="h-rep-header">
+                    <span>REPORTES RECIENTES</span>
+                    <a href="#">Ver Historial</a>
+                </div>
+                
+                <div class="lista-reportes-items">
+                    <div class="rep-item">
+                        <i class="fa-regular fa-file-pdf"></i>
+                        <div class="rep-info"><strong>Cierre Mensual - Febrero</strong><span>2026-03-01 • 4.2 MB</span></div>
+                        <span class="rep-ext">PDF <i class="fa-solid fa-chevron-right"></i></span>
+                    </div>
+                    <div class="rep-item">
+                        <i class="fa-regular fa-file-excel"></i>
+                        <div class="rep-info"><strong>Inventario de Repuestos Q1</strong><span>2026-03-05 • 856 KB</span></div>
+                        <span class="rep-ext">XLS <i class="fa-solid fa-chevron-right"></i></span>
+                    </div>
+                    <div class="rep-item">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <div class="rep-info"><strong>Historial Mantenimiento</strong><span>2026-03-10 • 1.2 MB</span></div>
+                        <span class="rep-ext">PDF <i class="fa-solid fa-chevron-right"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TARJETA SOPORTE (NEGRA) -->
+            <div class="card-soporte-it">
+                <span>SOPORTE TÉCNICO</span>
+                <h3>¿Necesitas un reporte personalizado?</h3>
+                <button class="btn-contacto-it">Contactar IT</button>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+</div>
+
+
+<!-- ESTA LÍNEA DEBE IR ANTES DE TU dashboard.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script src="dashboard.js"></script>
+<script src="viajes.js"></script>
+<script src="materiales.js"></script>
+<script src="choferes.js"></script>
+<script src="vehiculos.js"></script>
+<script src="inventario.js"></script>
+<script src="accidentes.js"></script>
+<script src="mantenimiento.js"></script>
+<script src="reportes.js"></script>
+
+</body>
+</html>
