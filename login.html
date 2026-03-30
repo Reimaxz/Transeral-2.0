@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transeral Login</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🚚</text></svg>">
+    
+    <!-- Iconos FontAwesome para el triángulo de advertencia -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <!-- 1. PANTALLA PORTADA -->
+    <div id="portada" class="pantalla activa">
+        <div class="card">
+            <div class="icono-contenedor">
+                <div class="circulo-fondo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"></path>
+                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                    </svg>
+                </div>
+            </div>
+
+            <h1>Sistema Transeral</h1>
+            <p>Sistema de gestión de viajes, materiales, vehículos y choferes.</p>
+
+            <button onclick="irLogin()">Iniciar Sesión <span class="flecha">→</span></button>
+        </div>
+    </div>
+
+    <!-- 2. PANTALLA LOGIN -->
+    <div id="login" class="pantalla">
+        <div class="cardlogin">
+            <div class="icono-contenedor login">
+                <div class="circulo-fondo login">
+                    <span class="emoji-candado">🔒</span>
+                </div>
+            </div>
+
+            <h2>Acceso Seguro</h2>
+            <p class="subtitulo">Ingresa tus credenciales</p>
+
+            <form class="inputs-group" onsubmit="event.preventDefault(); login();">
+
+                <!-- CAMPO USUARIO -->
+                <label class="etiqueta-input">Usuario</label>
+                <div class="input-con-icono" id="box-usuario">
+                    <svg class="icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <input id="usuario" type="text" placeholder="Ej. admin" required>
+                </div>
+                <!-- MENSAJE ERROR USUARIO -->
+                <div id="err-usuario" class="mensaje-error" style="display: none;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> El usuario o la contraseña es incorrecto.
+                </div>
+
+                <!-- CAMPO CONTRASEÑA -->
+                <label class="etiqueta-input">Contraseña</label>
+                <div class="input-con-icono" id="box-password">
+                    <svg class="icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <input id="password" type="password" placeholder="••••" required>
+                </div>
+                <!-- MENSAJE ERROR CONTRASEÑA -->
+                <div id="err-password" class="mensaje-error" style="display: none;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> El usuario o la contraseña es incorrecto.
+                </div>
+
+                <button type="submit">Entrar al sistema</button>
+            </form>
+
+            <span class="volver" onclick="volver()">← Volver</span>
+        </div>
+    </div>
+
+</div>
+
+<script src="login.js"></script>
+
+</body>
+</html>
